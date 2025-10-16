@@ -13,7 +13,7 @@ export default function Splash() {
       if (isLoggedIn) {
         router.replace("/footer/home"); // 로그인 되어 있으면 홈으로
       } else {
-        router.replace("/login"); // 아니면 로그인 페이지로
+        router.replace("/footer/home"); // 아니면 로그인 페이지로
       }
     }, 3000); // 3초 후 이동
 
