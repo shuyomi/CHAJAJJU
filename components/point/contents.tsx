@@ -1,7 +1,9 @@
 import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
 import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 
 export default function userpoint () {
+ const router = useRouter();
 
 const pointHistory = [
     { id: 1, date: "2025-09-27", place: "강남역 거점", item: "플라스틱", points: 50 },
@@ -11,7 +13,7 @@ const pointHistory = [
 
 return ( 
   <View style={styles.container}>
-           <Pressable style={styles.button} onPress={() => { /* 카메라 열기 */ }}>
+           <Pressable style={styles.button} onPress={() => router.push("/camera")}>
              <Ionicons name="camera" size={20} color="#fff" />
              <Text style={styles.text}>포인트 적립하기</Text>
            </Pressable>

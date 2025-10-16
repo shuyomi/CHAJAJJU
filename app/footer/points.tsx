@@ -1,6 +1,6 @@
 import {View, Text, StyleSheet, StatusBar } from "react-native";
 import Header from "../../components/point/userpoint";
-import Contents from "../../components/point/camera";
+import Contents from "../../components/point/contents";
 import Menu from "../../components/point/pointhistory";
 
 export default function PointsScreen() {
