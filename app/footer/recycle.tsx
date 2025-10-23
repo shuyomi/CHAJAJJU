@@ -34,8 +34,9 @@ export default function RecycleCalcScreen() {
 }
 
 const styles = StyleSheet.create({
-   container: { flex: 1, padding: 5, gap: 20, backgroundColor: "#fff"},
+   container: { flex: 1, padding: 5, gap: 20,  backgroundColor: "#fff"},
    header: {
+    
     height: 50,                 // 상단 높이 20px
     justifyContent: "center",
     alignItems: "center",
@@ -52,7 +53,7 @@ const styles = StyleSheet.create({
     color: "#2cd5439e",
   },
 
-  title: { fontSize: 20, fontWeight: "700" },
+  title: { fontSize: 20, fontWeight: "700", left: 10, },
   guideButton: {
     backgroundColor: "#defae863",
     padding: 10,
