@@ -1,7 +1,73 @@
-import { View, Text, StyleSheet, Pressable, ScrollView, Image } from "react-native";
+import { View, Text, StyleSheet, Pressable, ScrollView, Image,  ActivityIndicator,Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import React, { useEffect, useState } from "react";
+import * as SecureStore from "expo-secure-store";
 
-export default function MyPage() {
+/*export default function MyPageScreen() {
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const getToken = async () => {
+    try {
+      const token = await SecureStore.getItemAsync("accessToken");
+      console.log("👉 SecureStore에서 불러온 JWT:", token);
+      return token;
+    } catch (error) {
+      console.error("토큰 불러오기 실패:", error);
+      return null;
+    }
+  };
+
+  // ✅ 사용자 정보 가져오기
+  const fetchUserInfo = async () => {
+    try {
+      const token = await getToken();
+
+      if (!token) {
+        Alert.alert("로그인 필요", "로그인 정보가 없습니다.");
+        return;
+      }
+
+      const response = await fetch("http://13.209.202.27:8080/api/auth/login-success", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) throw new Error("로그인 정보 조회 실패");
+
+      const data = await response.json();
+      console.log("✅ 응답 받은 사용자 정보:", data);
+      setUserData(data);
+    } catch (error) {
+      console.error("에러:", error);
+      Alert.alert("오류", "사용자 정보를 불러오지 못했습니다.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserInfo();
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.center}>
+        <ActivityIndicator size="large" color="#8B5CF6" />
+        <Text>로딩 중...</Text>
+      </View>
+    );
+  }
+
+  if (!userData) {
+    return (
+      <View style={styles.center}>
+        <Text>사용자 정보를 찾을 수 없습니다.</Text>
+      </View>
+    );
+  }*/
+ export default function MyPageScreen() {
   return (
     <View style={styles.container}>
       {/* 상단 프로필 */}
@@ -129,4 +195,9 @@ const styles = StyleSheet.create({
   cardImage: { width: "100%", height: 120 },
   cardTitle: { fontSize: 14, fontWeight: "700", margin: 8, color: "#1F2937" },
   cardText: { fontSize: 12, color: "#6B7280", marginHorizontal: 8, marginBottom: 10 },
+    center: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });

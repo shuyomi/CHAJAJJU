@@ -76,7 +76,7 @@ export default function Contents() {
 }
 
 const styles = StyleSheet.create({
-  container: { marginBottom: 20 },
+  container: { marginBottom: 20, left: 20 },
   title: { fontSize: 18, fontWeight: "700", marginBottom: 12 },
   row: {
     flexDirection: "row",
