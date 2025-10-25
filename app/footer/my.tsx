@@ -3,9 +3,10 @@ import { Ionicons } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
 
-/*export default function MyPageScreen() {
+export default function MyPageScreen() {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
+
 
   const getToken = async () => {
     try {
@@ -30,7 +31,7 @@ import * as SecureStore from "expo-secure-store";
 
       const response = await fetch("http://13.209.202.27:8080/api/auth/login-success", {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: 'Bearer ' + token,
         },
       });
 
@@ -66,15 +67,15 @@ import * as SecureStore from "expo-secure-store";
         <Text>사용자 정보를 찾을 수 없습니다.</Text>
       </View>
     );
-  }*/
- export default function MyPageScreen() {
+  }
+ /*export default function MyPageScreen() {*/
   return (
     <View style={styles.container}>
       {/* 상단 프로필 */}
       <View style={styles.profileBox}>
         <Ionicons name="person-circle-outline" size={80} color="#8B5CF6" />
-        <Text style={styles.name}>슈슈슈</Text>
-        <Text style={styles.id}>ID: suhshushu</Text>
+        <Text style={styles.name}>{userData.name}</Text>
+        <Text style={styles.id}>{userData.phone}</Text>
         <Text style={styles.point}>포인트: 2,340P</Text>
       </View>
 
