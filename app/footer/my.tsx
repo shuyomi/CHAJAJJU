@@ -29,7 +29,7 @@ export default function MyPageScreen() {
         return;
       }
 
-      const response = await fetch("http://13.209.202.27:8080/api/auth/login-success", {
+      const response = await fetch("http://13.209.202.27:8080/api/auth/me", {
         headers: {
           Authorization: 'Bearer ' + token,
         },
@@ -74,7 +74,7 @@ export default function MyPageScreen() {
       {/* 상단 프로필 */}
       <View style={styles.profileBox}>
         <Ionicons name="person-circle-outline" size={80} color="#8B5CF6" />
-        <Text style={styles.name}>{userData.name}</Text>
+        <Text style={styles.name}>{userData.id}</Text>
         <Text style={styles.id}>{userData.phone}</Text>
         <Text style={styles.point}>포인트: 2,340P</Text>
       </View>
