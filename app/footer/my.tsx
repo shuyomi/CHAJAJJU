@@ -7,11 +7,11 @@ export default function MyPageScreen() {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-
+  // ✅ 토큰 가져오기 (SecureStore 사용)
   const getToken = async () => {
     try {
       const token = await SecureStore.getItemAsync("accessToken");
-      console.log("👉 SecureStore에서 불러온 JWT:", token);
+      console.log("👉 저장된 JWT:", token);
       return token;
     } catch (error) {
       console.error("토큰 불러오기 실패:", error);
@@ -19,19 +19,20 @@ export default function MyPageScreen() {
     }
   };
 
-  // ✅ 사용자 정보 가져오기
+  // ✅ 사용자 정보 불러오기
   const fetchUserInfo = async () => {
     try {
       const token = await getToken();
 
       if (!token) {
         Alert.alert("로그인 필요", "로그인 정보가 없습니다.");
+        setLoading(false);
         return;
       }
 
       const response = await fetch("http://13.209.202.27:8080/api/auth/me", {
         headers: {
-          Authorization: 'Bearer ' + token,
+          Authorization: "Bearer " + token,
         },
       });
 
@@ -42,7 +43,7 @@ export default function MyPageScreen() {
       setUserData(data);
     } catch (error) {
       console.error("에러:", error);
-      Alert.alert("오류", "사용자 정보를 불러오지 못했습니다.");
+      Alert.alert("오류", "사용자 정보를 불러오는 데 실패했습니다.");
     } finally {
       setLoading(false);
     }
@@ -54,29 +55,29 @@ export default function MyPageScreen() {
 
   if (loading) {
     return (
-      <View style={styles.center}>
+      <View style={styles.loading}>
         <ActivityIndicator size="large" color="#8B5CF6" />
-        <Text>로딩 중...</Text>
+        <Text style={{ color: "#6B7280", marginTop: 10 }}>사용자 정보를 불러오는 중...</Text>
       </View>
     );
   }
 
   if (!userData) {
     return (
-      <View style={styles.center}>
-        <Text>사용자 정보를 찾을 수 없습니다.</Text>
+      <View style={styles.container}>
+        <Text>사용자 정보를 불러올 수 없습니다.</Text>
       </View>
     );
   }
- /*export default function MyPageScreen() {*/
+
   return (
     <View style={styles.container}>
       {/* 상단 프로필 */}
       <View style={styles.profileBox}>
         <Ionicons name="person-circle-outline" size={80} color="#8B5CF6" />
-        <Text style={styles.name}>{userData.id}</Text>
-        <Text style={styles.id}>{userData.phone}</Text>
-        <Text style={styles.point}>포인트: 2,340P</Text>
+        <Text style={styles.name}>{userData?.name || "이름 없음"}</Text>
+        <Text style={styles.id}>{userData?.phone || "전화번호 없음"}</Text>
+        <Text style={styles.point}>{userData?.point ?? 0}P</Text>
       </View>
 
       {/* 메뉴 버튼 영역 */}
@@ -150,6 +151,11 @@ export default function MyPageScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#F9FAFB", alignItems: "center", paddingTop: 80 },
+   loading: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   profileBox: { alignItems: "center", marginBottom: 40 },
   name: { fontSize: 22, fontWeight: "800", color: "#111827", marginTop: 8 },
   id: { fontSize: 14, color: "#6B7280", marginTop: 2 },

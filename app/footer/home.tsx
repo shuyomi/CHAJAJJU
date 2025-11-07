@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, StatusBar, ActivityIndicator, TextInput } from 
 import { WebView } from "react-native-webview";
 import type { WebView as WebViewType } from "react-native-webview";
 
+
 const KAKAO_APP_KEY = "f143a20f2be877dcef35366b593462b0";
 const BACKEND_URL = "http://13.209.202.27:8080/map/main";
 
