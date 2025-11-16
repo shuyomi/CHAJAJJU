@@ -2,8 +2,12 @@ import { View, Text, StyleSheet, Pressable, ScrollView, Image,  ActivityIndicato
 import { Ionicons } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import Foundation from '@expo/vector-icons/Foundation';
+import { useRouter } from "expo-router";
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
-export default function MyPageScreen() {
+/*export default function MyPageScreen() {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -68,50 +72,96 @@ export default function MyPageScreen() {
         <Text>사용자 정보를 불러올 수 없습니다.</Text>
       </View>
     );
-  }
+  }*/
+export default function MyPageScreen() {
+const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      // ✅ 저장된 토큰 삭제
+      await SecureStore.deleteItemAsync("accessToken");
+
+      // ✅ 로그인 페이지로 이동
+      router.replace("/login"); 
+      // replace()는 뒤로가기 시 마이페이지로 돌아가지 않게 함
+    } catch (error) {
+      console.error("로그아웃 실패:", error);
+    }
+  };
 
   return (
     <View style={styles.container}>
       {/* 상단 프로필 */}
       <View style={styles.profileBox}>
         <Ionicons name="person-circle-outline" size={80} color="#8B5CF6" />
-        <Text style={styles.name}>{userData?.name || "이름 없음"}</Text>
+        <Text style={styles.name}>shushushu</Text>
+        <Text style={styles.id}>0104444444</Text>
+        <Text style={styles.point}>3,300P</Text>
+       {/*<Text style={styles.name}>{userData?.name || "이름 없음"}</Text>
         <Text style={styles.id}>{userData?.phone || "전화번호 없음"}</Text>
-        <Text style={styles.point}>{userData?.point ?? 0}P</Text>
+        <Text style={styles.point}>{userData?.point ?? 0}P</Text>*/}
       </View>
 
       {/* 메뉴 버튼 영역 */}
       <View style={styles.menuBox}>
-        <Pressable
-          style={styles.menuItem}
-          onPress={() => {
-            // router.push("/point-history");
-          }}
-        >
-          <Ionicons name="wallet-outline" size={28} color="#6D28D9" />
-          <Text style={styles.menuText}>포인트 내역</Text>
-        </Pressable>
 
         <Pressable
           style={styles.menuItem}
           onPress={() => {
-            // router.push("/recycle-history");
-          }}
-        >
-          <Ionicons name="leaf-outline" size={28} color="#059669" />
-          <Text style={styles.menuText}>분리수거 내역</Text>
-        </Pressable>
-
-        <Pressable
-          style={styles.menuItem}
-          onPress={() => {
-            // router.push("/recent-place");
+            router.push("/recent-place");
           }}
         >
           <Ionicons name="location-outline" size={28} color="#2563EB" />
           <Text style={styles.menuText}>최근 방문 거점</Text>
         </Pressable>
+        <Pressable
+          style={styles.menuItem}
+          onPress={() => {
+            router.push("/userinfo");
+          }}
+        >
+          <Foundation name="page-edit" size={28} color="#6D28D9" />
+          <Text style={styles.menuText}>개인정보수정</Text>
+        </Pressable>
+
+         <Pressable style={styles.menuItem} onPress={handleLogout}>
+          <MaterialCommunityIcons name="logout" size={30} color="#059669" />
+          <Text style={styles.menuText}>로그아웃</Text>
+        </Pressable>
+
+        
       </View>
+
+ <View style={styles.rewardBox}>
+    <Text style={styles.rewardTitle}>포인트 교환 </Text>
+    <Text style={styles.rewardDesc}>
+      종량제 봉투, 기부, 교통카드 충전 중 선택하여 교환할 수 있습니다.
+    </Text>
+
+    <View style={styles.rewardPreviewRow}>
+      <View style={styles.rewardPreviewItem}>
+        <MaterialCommunityIcons name="trash-can-outline" size={28} color="#6B7280" />
+        <Text style={styles.rewardText}>종량제 봉투</Text>
+      </View>
+      <View style={styles.rewardPreviewItem}>
+        <MaterialCommunityIcons name="hand-heart-outline" size={28} color="#DC2626" />
+        <Text style={styles.rewardText}>기부하기</Text>
+      </View>
+      <View style={styles.rewardPreviewItem}>
+        <MaterialCommunityIcons name="bus" size={28} color="#2563EB" />
+        <Text style={styles.rewardText}>교통카드</Text>
+      </View>
+    </View>
+
+    {/* ✅ 하나의 교환 페이지로 이동 */}
+    <Pressable
+      style={styles.exchangeButton}
+      onPress={() => router.push("/reward")}
+    >
+      <Text style={styles.exchangeButtonText}>교환하러 가기</Text>
+    </Pressable>
+  </View>
+
 
       {/* 🔽 분리수거 관련 뉴스 / 캠페인 슬라이드 🔽 */}
       <View style={styles.newsSection}>
@@ -150,13 +200,13 @@ export default function MyPageScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F9FAFB", alignItems: "center", paddingTop: 80 },
+  container: { flex: 1, backgroundColor: "#F9FAFB", alignItems: "center", paddingTop: 70 },
    loading: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
   },
-  profileBox: { alignItems: "center", marginBottom: 40 },
+  profileBox: { alignItems: "center", marginBottom: 25 },
   name: { fontSize: 22, fontWeight: "800", color: "#111827", marginTop: 8 },
   id: { fontSize: 14, color: "#6B7280", marginTop: 2 },
   point: { fontSize: 16, color: "#4B5563", marginTop: 4 },
@@ -180,6 +230,48 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   menuText: { marginTop: 8, fontSize: 13, fontWeight: "600", color: "#374151" },
+   rewardBox: {
+
+    padding: 20,
+    backgroundColor: "#F9FAFB",
+    borderTopWidth: 1,
+    borderColor: "#E5E7EB",
+  },
+  rewardTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#4B5563",
+    marginBottom: 3,
+  },
+  rewardDesc: {
+    fontSize: 14,
+    color: "#6B7280",
+    marginBottom: 15,
+  },
+  rewardPreviewRow: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginBottom: 20,
+  },
+  rewardPreviewItem: {
+    alignItems: "center",
+  },
+  rewardText: {
+    marginTop: 5,
+    fontSize: 13,
+    color: "#4B5563",
+  },
+  exchangeButton: {
+    backgroundColor: "#0bc93779",
+    paddingVertical: 12,
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  exchangeButtonText: {
+    color: "#400f0fd4",
+    fontWeight: "600",
+    fontSize: 16,
+  },
   newsSection: { width: "100%", height: "30%", paddingLeft: 24 },
   sectionTitle: {
     fontSize: 16,

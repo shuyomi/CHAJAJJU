@@ -5,7 +5,7 @@
 //import { Ionicons } from "@expo/vector-icons"; 
 
 import { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Pressable, Alert, Vibration } from "react-native";
+import { View, Text, StyleSheet, Pressable, Alert } from "react-native";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -22,75 +22,99 @@ export default function CameraScreen() {
     }
   }, []);
 
-  if (!permission) {
-    return <Text>카메라 권한 요청 중...</Text>;
-  }
-
-  if (!permission.granted) {
+  if (!permission) return <Text>카메라 권한 요청 중...</Text>;
+  if (!permission.granted)
     return (
       <View style={styles.center}>
         <Text>카메라 권한이 필요합니다.</Text>
       </View>
     );
-  }
 
- 
-  const handleBarcodeScanned = (result) => {
-  if (scanned) return;
-  setScanned(true);
+  // ✅ QR 스캔 핸들러
+  const handleBarcodeScanned = async (result) => {
+    if (scanned) return;
+    setScanned(true);
 
-  // QR 데이터 안전 추출
-  const data =
-    result?.data ??
-    result?.rawValue ??
-    result?.barcodes?.[0]?.rawValue ??
-    "";
+    const data =
+      result?.data ??
+      result?.rawValue ??
+      result?.barcodes?.[0]?.rawValue ??
+      "";
 
-  if (!data) {
-    console.warn("QR 데이터 없음:", result);
-    return;
-  }
+    if (!data) {
+      console.warn("QR 데이터 없음:", result);
+      return;
+    }
 
-  console.log("QR 인식됨:", data);
-  Alert.alert("QR 코드 인식 완료", `인식된 값: ${data}`);
-};
+    console.log("✅ [LOG] QR 인식 성공:", data);
+
+    try {
+      // ✅ QR에서 claimId, signature 추출
+      const url = new URL(data);
+      const claimId = url.searchParams.get("c");
+      const signature = url.searchParams.get("s");
+
+      if (!claimId || !signature) {
+        Alert.alert("QR 데이터 오류", "claimId 또는 signature가 없습니다.");
+        setScanned(false);
+        return;
+      }
+
+      // ✅ 백엔드 /verify 호출
+      const res = await fetch(
+        `http://13.209.202.27:8080/recycle-history/verify?claimId=${claimId}&signature=${signature}`
+      );
+
+      if (!res.ok) {
+        Alert.alert("검증 실패", "QR이 만료되었거나 잘못되었습니다.");
+        setScanned(false);
+        return;
+      }
+
+      const json = await res.json();
+
+      // ✅ pointval 페이지로 이동 (검증된 데이터 전달)
+      router.push({
+
+        pathname: "/pointval",
+        params: {
+          claimId,
+          signature,
+          place: json.collectionPointName,
+          item: json.itemName,
+          earned: json.expectedAmount,
+          total: json.quantity,
+        },
+      });
+    } catch (e) {
+      console.error("QR 처리 중 오류:", e);
+      Alert.alert("에러", "QR 처리 중 문제가 발생했습니다.");
+      setScanned(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
       {/* ← 뒤로가기 버튼 */}
-      <Pressable style={styles.backButton} onPress={() => router.push("/footer/points")}>
+      <Pressable
+        style={styles.backButton}
+        onPress={() => router.push("/footer/points")}
+      >
         <Ionicons name="arrow-back" size={24} color="#000" />
       </Pressable>
 
       <Text style={styles.title}>QR 코드 인식</Text>
 
       <View style={styles.cameraWrapper}>
-        {/* ✅ QR 인식 활성화 */}
         <CameraView
           style={styles.camera}
           facing="back"
           onBarcodeScanned={scanned ? undefined : handleBarcodeScanned}
-          barcodeScannerSettings={{
-            barcodeTypes: ["qr"],
-          }}
+          barcodeScannerSettings={{ barcodeTypes: ["qr"] }}
         />
       </View>
 
       <Text style={styles.guideText}>QR 코드를 박스 안에 맞춰주세요</Text>
-       
-       <Pressable style={styles.nextButton} onPress={() => router.push("/pointval")}>
-        <Text style={styles.nextText}>다음 단계</Text>
-      </Pressable>
-
-      {/* 다시 스캔 버튼 (테스트용) */}
-      {scanned && (
-        <Pressable
-          style={[styles.nextButton, { marginTop: 30, backgroundColor: "#555" }]}
-          onPress={() => setScanned(false)}
-        >
-          <Text style={styles.nextText}>다시 스캔</Text>
-        </Pressable>
-      )}
     </View>
   );
 }
@@ -118,14 +142,6 @@ const styles = StyleSheet.create({
   camera: { flex: 1 },
   guideText: { marginTop: 20, fontSize: 16, color: "#555" },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
-  nextButton: {
-    marginTop: 30,
-    backgroundColor: "#2e7dff",
-    borderRadius: 8,
-    paddingVertical: 14,
-    paddingHorizontal: 40,
-  },
-  nextText: { color: "#fff", fontSize: 16, fontWeight: "600" },
 });
 
 
