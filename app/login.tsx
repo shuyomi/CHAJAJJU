@@ -1,7 +1,7 @@
 // app/login.js (또는 app/LoginForm.js)
 
 import React, { useState} from "react";
-import { View, TextInput, Text, Pressable, Alert, StyleSheet } from "react-native";
+import { Image, View, TextInput, Text, Pressable, Alert, StyleSheet } from "react-native";
 import * as SecureStore from "expo-secure-store";
 import { useRouter } from "expo-router";
 
@@ -49,6 +49,11 @@ export default function LoginForm() {
 
   return (
      <View style={styles.container}>
+       <Image
+              source={require("../assets/images/splashtext.png")}
+              style={styles.logo}
+            />
+          
       <TextInput
         placeholder="ID"
         value={id}
@@ -91,6 +96,12 @@ export default function LoginForm() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: "center", alignItems: "center", padding: 20, backgroundColor: "#fff" },
+  logo: {
+    width: 260,    // 🔥 너가 원하는 가로 크기
+    height: 120,    // 🔥 너가 원하는 세로 크기
+    resizeMode: "contain", // 비율 깨짐 방지
+    bottom: 2,
+    },
   input: {
     width: "90%",
     borderWidth: 1,
