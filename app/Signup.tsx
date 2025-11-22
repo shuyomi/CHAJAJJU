@@ -24,7 +24,7 @@ export default function SignupBody() {
   const [birth, setBirth] = useState("");
   const [address, setAddress] = useState("");
 
-  // ✅ 이메일 중복 확인
+   // ✅ 이메일 중복 확인
   const handleCheckEmail = async () => {
     try {
       const res = await fetch(
@@ -84,6 +84,13 @@ export default function SignupBody() {
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
+    <Pressable
+      onPress={() => router.push("/login")}
+      style={{ position: "absolute", top: 40, left: 20, padding: 8 }}
+    >
+      <Text style={{ fontSize: 18 }}>←</Text>
+    </Pressable>
+
       <View style={styles.container}>
         <Text style={styles.title}>회원가입</Text>
 
@@ -194,6 +201,7 @@ export default function SignupBody() {
         </Pressable>
       </View>
     </ScrollView>
+
   );
 }
 
