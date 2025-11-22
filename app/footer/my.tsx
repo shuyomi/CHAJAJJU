@@ -7,29 +7,30 @@ import Foundation from '@expo/vector-icons/Foundation';
 import { useRouter } from "expo-router";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
-/*export default function MyPageScreen() {
-  const [userData, setUserData] = useState(null);
+
+export default function MyPageScreen() {
+const router = useRouter();
+
+   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // ✅ 토큰 가져오기 (SecureStore 사용)
+  // 토큰 가져오기
   const getToken = async () => {
     try {
       const token = await SecureStore.getItemAsync("accessToken");
-      console.log("👉 저장된 JWT:", token);
       return token;
     } catch (error) {
-      console.error("토큰 불러오기 실패:", error);
       return null;
     }
   };
 
-  // ✅ 사용자 정보 불러오기
+  // 사용자 정보 불러오기
   const fetchUserInfo = async () => {
     try {
       const token = await getToken();
 
       if (!token) {
-        Alert.alert("로그인 필요", "로그인 정보가 없습니다.");
+        Alert.alert("로그인 필요", "로그인이 필요합니다.");
         setLoading(false);
         return;
       }
@@ -40,13 +41,11 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
         },
       });
 
-      if (!response.ok) throw new Error("로그인 정보 조회 실패");
+      if (!response.ok) throw new Error("사용자 정보 조회 실패");
 
       const data = await response.json();
-      console.log("✅ 응답 받은 사용자 정보:", data);
       setUserData(data);
     } catch (error) {
-      console.error("에러:", error);
       Alert.alert("오류", "사용자 정보를 불러오는 데 실패했습니다.");
     } finally {
       setLoading(false);
@@ -57,6 +56,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
     fetchUserInfo();
   }, []);
 
+  // 로딩 중 화면
   if (loading) {
     return (
       <View style={styles.loading}>
@@ -66,27 +66,21 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
     );
   }
 
+  // 사용자 정보 로드 실패
   if (!userData) {
     return (
       <View style={styles.container}>
         <Text>사용자 정보를 불러올 수 없습니다.</Text>
       </View>
     );
-  }*/
-export default function MyPageScreen() {
-const router = useRouter();
+  }
 
+  // 로그아웃 처리
   const handleLogout = async () => {
     try {
-      // ✅ 저장된 토큰 삭제
       await SecureStore.deleteItemAsync("accessToken");
-
-      // ✅ 로그인 페이지로 이동
-      router.replace("/login"); 
-      // replace()는 뒤로가기 시 마이페이지로 돌아가지 않게 함
-    } catch (error) {
-      console.error("로그아웃 실패:", error);
-    }
+      router.replace("/login");
+    } catch (error) {}
   };
 
   return (
@@ -94,13 +88,15 @@ const router = useRouter();
       {/* 상단 프로필 */}
       <View style={styles.profileBox}>
         <Ionicons name="person-circle-outline" size={80} color="#8B5CF6" />
-        <Text style={styles.name}>shushushu</Text>
-        <Text style={styles.id}>0104444444</Text>
-        <Text style={styles.point}>3,300P</Text>
+         <Text style={styles.name}>{userData?.name}</Text>
+        <Text style={styles.id}>{userData?.phone}</Text>
+        <Text style={styles.point}>{userData?.point}P</Text>
+      </View>
+
        {/*<Text style={styles.name}>{userData?.name || "이름 없음"}</Text>
         <Text style={styles.id}>{userData?.phone || "전화번호 없음"}</Text>
         <Text style={styles.point}>{userData?.point ?? 0}P</Text>*/}
-      </View>
+  
 
       {/* 메뉴 버튼 영역 */}
       <View style={styles.menuBox}>
